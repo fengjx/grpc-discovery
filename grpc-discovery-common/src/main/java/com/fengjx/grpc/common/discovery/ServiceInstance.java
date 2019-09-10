@@ -1,25 +1,29 @@
 package com.fengjx.grpc.common.discovery;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
+import java.net.URI;
 import java.util.Map;
 
 /**
  * @author fengjianxin
  */
-@Getter
-@Setter
-@Builder
-public class ServiceInstance {
+public interface ServiceInstance {
 
     public static final String METADATA_KEY_START_TIME = "startTime";
 
-    private String getServiceId;
-    private String host;
-    private int port;
+    String getServiceId();
 
-    private Map<String, Object> metadata;
+    String getHost();
+
+    String getIp();
+
+    int getPort();
+
+    URI getUri();
+
+    Map<String, Object> getMetadata();
+
+    default String getScheme() {
+        return null;
+    }
 
 }

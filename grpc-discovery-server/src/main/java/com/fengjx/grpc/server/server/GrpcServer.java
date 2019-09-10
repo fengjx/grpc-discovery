@@ -4,10 +4,12 @@ import com.fengjx.grpc.common.discovery.ServiceInstance;
 import com.fengjx.grpc.server.registry.ServerRegistration;
 import com.google.common.collect.Lists;
 import com.google.common.net.InetAddresses;
-import io.grpc.*;
+import io.grpc.BindableService;
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
+import io.grpc.ServerServiceDefinition;
 import io.grpc.netty.NettyServerBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -27,10 +29,12 @@ public class GrpcServer {
     private GrpcServer() {
     }
 
+    private GrpcServer(ServiceInstance serviceInstance) {
+        this.serviceInstance = serviceInstance;
+    }
+
     public static GrpcServer newInstance(ServiceInstance serviceInstance) {
-        GrpcServer grpcServer = new GrpcServer();
-        grpcServer.serviceInstance = serviceInstance;
-        return grpcServer;
+        return new GrpcServer(serviceInstance);
     }
 
     public GrpcServer addService(ServerServiceDefinition service) {
@@ -49,6 +53,10 @@ public class GrpcServer {
     }
 
     public void start() throws Exception {
+        start(false);
+    }
+
+    public void start(boolean block) throws Exception {
         NettyServerBuilder serverBuilder = newServerBuilder();
         configureServices(serverBuilder);
         configureBindableServices(serverBuilder);
@@ -57,6 +65,9 @@ public class GrpcServer {
         registration.registry(serviceInstance);
         log.info("gRPC Server started, listening on address: {}, port: {}", serviceInstance.getHost(),
                 serviceInstance.getPort());
+        if (block) {
+            blockUntilShutdown();
+        }
     }
 
     public void destroy() {
@@ -71,11 +82,7 @@ public class GrpcServer {
     private NettyServerBuilder newServerBuilder() {
         final String host = serviceInstance.getHost();
         final int port = serviceInstance.getPort();
-        if (StringUtils.isBlank(host)) {
-            return NettyServerBuilder.forPort(port);
-        } else {
-            return NettyServerBuilder.forAddress(new InetSocketAddress(InetAddresses.forString(host), port));
-        }
+        return NettyServerBuilder.forAddress(new InetSocketAddress(InetAddresses.forString(host), port));
     }
 
     private void configureServices(ServerBuilder serverBuilder) {
@@ -87,6 +94,12 @@ public class GrpcServer {
     private void configureBindableServices(ServerBuilder serverBuilder) {
         for (BindableService bindableService : bindableServices) {
             serverBuilder.addService(bindableService);
+        }
+    }
+
+    private void blockUntilShutdown() throws InterruptedException {
+        if (server != null) {
+            server.awaitTermination();
         }
     }
 }
