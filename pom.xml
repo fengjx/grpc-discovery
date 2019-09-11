@@ -20,6 +20,7 @@
     <properties>
         <java.version>1.8</java.version>
         <encoding>UTF-8</encoding>
+        <junit.version>4.12</junit.version>
         <grpc.version>1.23.0</grpc.version>
         <zookeeper.version>3.5.5</zookeeper.version>
         <lombok.version>1.18.8</lombok.version>
@@ -33,6 +34,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
@@ -74,6 +81,11 @@
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
                 <version>${curator.version}</version>
             </dependency>
             <dependency>
