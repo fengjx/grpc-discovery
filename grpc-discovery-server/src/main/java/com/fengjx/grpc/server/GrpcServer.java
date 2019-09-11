@@ -1,4 +1,5 @@
-package com.fengjx.grpc.server.server;
+
+package com.fengjx.grpc.server;
 
 import com.fengjx.grpc.common.discovery.ServiceInstance;
 import com.fengjx.grpc.server.registry.ServerRegistration;
@@ -26,8 +27,7 @@ public class GrpcServer {
     private List<ServerServiceDefinition> services = Lists.newArrayList();
     private List<BindableService> bindableServices = Lists.newArrayList();
 
-    private GrpcServer() {
-    }
+    private GrpcServer() {}
 
     private GrpcServer(ServiceInstance serviceInstance) {
         this.serviceInstance = serviceInstance;
@@ -62,9 +62,9 @@ public class GrpcServer {
         configureBindableServices(serverBuilder);
         server = serverBuilder.build();
         server.start();
-        registration.registry(serviceInstance);
-        log.info("gRPC Server started, listening on address: {}, port: {}", serviceInstance.getHost(),
+        log.info("gRPC Server started, binding on host: {}, port: {}", serviceInstance.getHost(),
                 serviceInstance.getPort());
+        registration.registry(serviceInstance);
         if (block) {
             blockUntilShutdown();
         }
