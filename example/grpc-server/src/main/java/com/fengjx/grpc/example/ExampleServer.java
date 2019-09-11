@@ -4,7 +4,7 @@ import com.fengjx.grpc.common.config.ZkProperties;
 import com.fengjx.grpc.common.discovery.DefaultServiceInstance;
 import com.fengjx.grpc.server.registry.ServerRegistration;
 import com.fengjx.grpc.server.registry.ZkServerRegistration;
-import com.fengjx.grpc.server.server.GrpcServer;
+import com.fengjx.grpc.server.GrpcServer;
 
 /**
  * @author fengjianxin
