@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public interface ServiceInstance {
 
-    public static final String METADATA_KEY_START_TIME = "startTime";
+    String METADATA_KEY_START_TIME = "startTime";
 
     String getServiceId();
 
