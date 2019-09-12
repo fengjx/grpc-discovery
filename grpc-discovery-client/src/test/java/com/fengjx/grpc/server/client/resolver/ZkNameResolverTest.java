@@ -29,6 +29,7 @@ public class ZkNameResolverTest {
     @Test
     public void testWatch() throws InterruptedException {
         ZkNameResolver resolver = new ZkNameResolver("hello-world", client);
+        resolver.testWatch();
         LATCH.await();
     }
 

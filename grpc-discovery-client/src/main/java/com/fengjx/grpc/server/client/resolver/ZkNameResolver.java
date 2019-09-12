@@ -1,6 +1,9 @@
 
 package com.fengjx.grpc.server.client.resolver;
 
+import com.fengjx.grpc.common.constant.DiscoveryConsts;
+import com.fengjx.grpc.common.utils.NetworkUtils;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import io.grpc.Attributes;
 import io.grpc.EquivalentAddressGroup;
@@ -15,6 +18,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import javax.annotation.concurrent.GuardedBy;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -27,26 +31,22 @@ import static com.google.common.base.Preconditions.checkState;
 public class ZkNameResolver extends NameResolver implements ZkEventCallback {
 
 
-    private final String name;
+    private final String serviceId;
     private CuratorFramework client;
 
     @GuardedBy("this")
     private Listener listener;
     @GuardedBy("this")
-    private boolean resolving;
-    @GuardedBy("this")
     private boolean shutdown = false;
 
-    public ZkNameResolver(String name, CuratorFramework client) {
-        this.name = name;
+    public ZkNameResolver(String serviceId, CuratorFramework client) {
+        this.serviceId = serviceId;
         this.client = client;
-        resolve();
-        watch();
     }
 
     @Override
     public String getServiceAuthority() {
-        return name;
+        return serviceId;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ZkNameResolver extends NameResolver implements ZkEventCallback {
         try {
             watcher.start();
         } catch (Exception e) {
-            log.error("gRPC server watch error, name: {}", name, e);
+            log.error("gRPC server watch error, serviceId: {}", serviceId, e);
         }
     }
 
@@ -76,15 +76,14 @@ public class ZkNameResolver extends NameResolver implements ZkEventCallback {
 
     @GuardedBy("this")
     private void resolve() {
-        log.debug("resolve for {}", this.name);
-        if (this.resolving || this.shutdown) {
+        log.debug("resolve for {}", serviceId);
+        if (this.shutdown) {
             return;
         }
-        this.resolving = true;
         try {
             client.getChildren().inBackground(this).forPath(getPath());
         } catch (Exception e) {
-            log.error("resolve error, name: {}", this.name, e);
+            log.error("resolve error, serviceId: {}", serviceId, e);
             this.listener.onError(Status.UNAVAILABLE.withCause(e));
         }
     }
@@ -108,31 +107,40 @@ public class ZkNameResolver extends NameResolver implements ZkEventCallback {
         addServersToListener(servers);
     }
 
-    private void addServersToListener(List<String> servers) {
+    private synchronized void addServersToListener(List<String> servers) {
         List<EquivalentAddressGroup> addrs = Lists.newArrayList();
-        log.info("Updating server list");
         for (String child : servers) {
             try {
-                URI uri = new URI("grpc://" + child);
-                String host = uri.getHost();
-                int port = uri.getPort();
-                addrs.add(new EquivalentAddressGroup(new InetSocketAddress(host, port), Attributes.EMPTY));
-            } catch (Exception e) {
-                log.error("Unparsable server address: {}", child, e);
+                URI uri = NetworkUtils.buildUri(DiscoveryConsts.GRPC_SCHEME, child);
+                log.info("find server node for [{}], uri: {}", serviceId, uri);
+                addrs.add(new EquivalentAddressGroup(new InetSocketAddress(uri.getHost(), uri.getPort()),
+                        Attributes.EMPTY));
+            } catch (URISyntaxException e) {
+                log.error("unparsable server address: {}", child, e);
             }
         }
+        // for test
+        if (listener == null) {
+            return;
+        }
+
         if (addrs.size() > 0) {
             listener.onAddresses(addrs, Attributes.EMPTY);
         } else {
             log.info("No servers online. Keep looking");
             this.listener.onError(Status.UNAVAILABLE
-                    .withDescription("None of the servers for " + name));
+                    .withDescription("None of the servers for " + serviceId));
         }
+    }
+
+    @VisibleForTesting
+    void testWatch() {
+        watch();
     }
 
 
     private String getPath() {
-        return "/" + name;
+        return "/" + serviceId;
     }
 
 }

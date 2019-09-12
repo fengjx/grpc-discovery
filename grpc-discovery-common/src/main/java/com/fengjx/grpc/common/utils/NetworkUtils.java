@@ -1,3 +1,4 @@
+
 package com.fengjx.grpc.common.utils;
 
 
@@ -5,6 +6,8 @@ import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.RandomUtil;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 import static cn.hutool.core.net.NetUtil.LOCAL_IP;
@@ -15,6 +18,7 @@ import static cn.hutool.core.net.NetUtil.LOCAL_IP;
  */
 public class NetworkUtils {
 
+    private NetworkUtils() {}
 
     public static String getLocalInnerIp() {
         Set<String> ips = NetUtil.localIpv4s();
@@ -24,6 +28,11 @@ public class NetworkUtils {
             }
         }
         return ips.iterator().next();
+    }
+
+    public static URI buildUri(String scheme, String path) throws URISyntaxException {
+        String uriStr = "%s://%s";
+        return new URI(String.format(uriStr, scheme, path));
     }
 
 
@@ -69,7 +78,8 @@ public class NetworkUtils {
                 return candidatePort;
             }
         }
-        throw new UtilException("Could not find an available port in the range [{}, {}] after {} attempts", minPort, maxPort, maxPort - minPort);
+        throw new UtilException("Could not find an available port in the range [{}, {}] after {} attempts", minPort,
+                maxPort, maxPort - minPort);
     }
 
 }

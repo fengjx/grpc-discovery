@@ -1,6 +1,7 @@
 
 package com.fengjx.grpc.server.client.resolver;
 
+import com.fengjx.grpc.common.constant.DiscoveryConsts;
 import io.grpc.NameResolver;
 import io.grpc.NameResolverProvider;
 
@@ -10,10 +11,6 @@ import java.net.URI;
  * @author fengjianxin
  */
 public class ZkNameResolverProvider extends NameResolverProvider {
-
-
-    public static final String DEFAULT_SCHEME = "zk";
-
 
 
     @Override
@@ -33,6 +30,6 @@ public class ZkNameResolverProvider extends NameResolverProvider {
 
     @Override
     public String getDefaultScheme() {
-        return DEFAULT_SCHEME;
+        return DiscoveryConsts.DISCOVERY_SCHEME;
     }
 }
