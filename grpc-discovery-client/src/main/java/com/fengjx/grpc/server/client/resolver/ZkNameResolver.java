@@ -32,7 +32,7 @@ public class ZkNameResolver extends NameResolver implements ZkEventCallback {
 
 
     private final String serviceId;
-    private CuratorFramework client;
+    private final CuratorFramework client;
 
     @GuardedBy("this")
     private Listener listener;

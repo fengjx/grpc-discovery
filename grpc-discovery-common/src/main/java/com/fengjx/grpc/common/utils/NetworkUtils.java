@@ -31,10 +31,13 @@ public class NetworkUtils {
     }
 
     public static URI buildUri(String scheme, String path) throws URISyntaxException {
-        String uriStr = "%s://%s";
-        return new URI(String.format(uriStr, scheme, path));
+        return new URI(buildUriString(scheme, path));
     }
 
+    public static String buildUriString(String scheme, String path) {
+        String uriStr = "%s://%s";
+        return String.format(uriStr, scheme, path);
+    }
 
     /**
      * 查找1024~65535范围内的可用端口<br>
