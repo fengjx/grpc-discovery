@@ -1,7 +1,7 @@
 
 package com.fengjx.grpc.server.registry;
 
-import com.fengjx.grpc.common.config.ZkProperties;
+import com.fengjx.grpc.common.config.ZkConfiguration;
 import com.fengjx.grpc.common.discovery.GsonInstanceSerializer;
 import com.fengjx.grpc.common.discovery.InstanceSerializer;
 import com.fengjx.grpc.common.discovery.ServiceInstance;
@@ -19,8 +19,8 @@ public class ZkServerRegistration implements ServerRegistration {
     private InstanceSerializer serializer = new GsonInstanceSerializer();
     private CuratorFramework client;
 
-    public ZkServerRegistration(ZkProperties zkProperties) throws InterruptedException {
-        this(ZkUtils.createCuratorFramework(zkProperties));
+    public ZkServerRegistration(ZkConfiguration zkConfiguration) throws InterruptedException {
+        this(ZkUtils.createCuratorFramework(zkConfiguration));
     }
 
     public ZkServerRegistration(CuratorFramework client) {
