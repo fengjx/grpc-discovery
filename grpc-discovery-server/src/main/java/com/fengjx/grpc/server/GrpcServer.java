@@ -9,7 +9,7 @@ import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerServiceDefinition;
-import io.grpc.netty.NettyServerBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
@@ -27,7 +27,8 @@ public class GrpcServer {
     private List<ServerServiceDefinition> services = Lists.newArrayList();
     private List<BindableService> bindableServices = Lists.newArrayList();
 
-    private GrpcServer() {}
+    private GrpcServer() {
+    }
 
     private GrpcServer(ServiceInstance serviceInstance) {
         this.serviceInstance = serviceInstance;
