@@ -2,7 +2,7 @@
 package com.fengjx.grpc.common.utils;
 
 import cn.hutool.core.util.StrUtil;
-import com.fengjx.grpc.common.config.ZkProperties;
+import com.fengjx.grpc.common.config.ZkConfiguration;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -15,17 +15,17 @@ public class ZkUtils {
 
     private ZkUtils() {}
 
-    public static CuratorFramework createCuratorFramework(ZkProperties zkProperties) throws InterruptedException {
+    public static CuratorFramework createCuratorFramework(ZkConfiguration zkConfiguration) throws InterruptedException {
         CuratorFramework client;
         RetryPolicy retryPolicy =
-                new ExponentialBackoffRetry(zkProperties.getBaseSleepTimeMs(), zkProperties.getMaxRetries());
+                new ExponentialBackoffRetry(zkConfiguration.getBaseSleepTimeMs(), zkConfiguration.getMaxRetries());
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
-                .connectString(zkProperties.getConnectString())
-                .sessionTimeoutMs(zkProperties.getSessionTimeoutMs())
-                .connectionTimeoutMs(zkProperties.getConnectionTimeoutMs())
+                .connectString(zkConfiguration.getConnectString())
+                .sessionTimeoutMs(zkConfiguration.getSessionTimeoutMs())
+                .connectionTimeoutMs(zkConfiguration.getConnectionTimeoutMs())
                 .retryPolicy(retryPolicy);
-        if (StrUtil.isNotBlank(zkProperties.getNamespace())) {
-            builder.namespace(zkProperties.getNamespace());
+        if (StrUtil.isNotBlank(zkConfiguration.getNamespace())) {
+            builder.namespace(zkConfiguration.getNamespace());
         }
         client = builder.build();
         client.start();
