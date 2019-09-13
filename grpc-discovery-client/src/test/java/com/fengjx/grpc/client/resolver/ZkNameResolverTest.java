@@ -1,8 +1,8 @@
 
-package com.fengjx.grpc.server.client.resolver;
+package com.fengjx.grpc.client.resolver;
 
+import com.fengjx.grpc.client.config.ZkConfig;
 import com.fengjx.grpc.common.utils.ZkUtils;
-import com.fengjx.grpc.server.client.config.ZkConfig;
 import org.apache.curator.framework.CuratorFramework;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,10 +1,6 @@
+package com.fengjx.grpc.client.channel;
 
-package com.fengjx.grpc.server.client.channel;
-
-import com.fengjx.grpc.common.constant.DiscoveryConsts;
-import com.fengjx.grpc.common.utils.NetworkUtils;
 import io.grpc.*;
-import io.grpc.netty.NettyChannelBuilder;
 
 import javax.annotation.concurrent.GuardedBy;
 import java.time.Duration;
@@ -17,19 +13,19 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author fengjianxin
  */
-public class NettyChannelFactory implements GrpcChannelFactory {
+public abstract class AbstractChannelFactory<T extends ManagedChannelBuilder<T>> implements GrpcChannelFactory {
 
-    private static final String DEFAULT_LOAD_BALANCING_POLICY = "round_robin";
+    protected static final String DEFAULT_LOAD_BALANCING_POLICY = "round_robin";
     private static final Duration DEFAULT_KEEP_ALIVE_TIME = Duration.of(60, ChronoUnit.SECONDS);
     private static final Duration DEFAULT_KEEP_ALIVE_TIMEOUT = Duration.of(20, ChronoUnit.SECONDS);
     private static final boolean DEFAULT_KEEP_ALIVE_WITHOUT_CALLS = false;
 
-    private final NameResolverProvider nameResolverProvider;
-
     @GuardedBy("this")
     private final Map<String, ManagedChannel> channels = new ConcurrentHashMap<>();
 
-    public NettyChannelFactory(NameResolverProvider nameResolverProvider) {
+    protected final NameResolverProvider nameResolverProvider;
+
+    public AbstractChannelFactory(NameResolverProvider nameResolverProvider) {
         this.nameResolverProvider = nameResolverProvider;
     }
 
@@ -44,13 +40,6 @@ public class NettyChannelFactory implements GrpcChannelFactory {
         return builder.build();
     }
 
-
-    private NettyChannelBuilder newChannelBuilder(final String serviceId) {
-        return NettyChannelBuilder.forTarget(NetworkUtils.buildUriString(DiscoveryConsts.DISCOVERY_SCHEME, serviceId))
-                .defaultLoadBalancingPolicy(DEFAULT_LOAD_BALANCING_POLICY)
-                .nameResolverFactory(nameResolverProvider);
-    }
-
     private void configure(final ManagedChannelBuilder builder) {
         configureKeepAlive(builder);
     }
@@ -60,5 +49,8 @@ public class NettyChannelFactory implements GrpcChannelFactory {
                 .keepAliveTimeout(DEFAULT_KEEP_ALIVE_TIMEOUT.toNanos(), TimeUnit.NANOSECONDS)
                 .keepAliveWithoutCalls(DEFAULT_KEEP_ALIVE_WITHOUT_CALLS);
     }
+
+
+    protected abstract T newChannelBuilder(String serviceId);
 
 }

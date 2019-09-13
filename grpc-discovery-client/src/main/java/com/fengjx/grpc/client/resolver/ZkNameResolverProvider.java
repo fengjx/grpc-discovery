@@ -1,5 +1,5 @@
 
-package com.fengjx.grpc.server.client.resolver;
+package com.fengjx.grpc.client.resolver;
 
 import com.fengjx.grpc.common.constant.DiscoveryConsts;
 import io.grpc.NameResolver;
@@ -27,7 +27,7 @@ public class ZkNameResolverProvider extends NameResolverProvider {
     public NameResolver newNameResolver(URI targetUri, NameResolver.Args args) {
         checkState(DiscoveryConsts.DISCOVERY_SCHEME.equals(targetUri.getScheme()),
                 "not support scheme type: " + targetUri.getScheme());
-        final String serviceId = targetUri.getPath();
+        final String serviceId = targetUri.getHost();
         return new ZkNameResolver(serviceId, client);
     }
 

@@ -1,4 +1,4 @@
-package com.fengjx.grpc.server.client.annotation;
+package com.fengjx.grpc.client.springboot.annotation;
 
 import io.grpc.ClientInterceptor;
 

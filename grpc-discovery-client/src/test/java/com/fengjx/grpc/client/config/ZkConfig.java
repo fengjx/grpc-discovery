@@ -1,15 +1,14 @@
 
-package com.fengjx.grpc.server.client.config;
+package com.fengjx.grpc.client.config;
 
-import com.fengjx.grpc.common.config.ZkProperties;
+import com.fengjx.grpc.common.config.ZkConfiguration;
 
 /**
  * @author fengjianxin
  */
 public class ZkConfig {
 
-
-    public static final ZkProperties ZK_PROPERTIES = new ZkProperties();
+    public static final ZkConfiguration ZK_PROPERTIES = new ZkConfiguration();
 
     static {
         ZK_PROPERTIES.setConnectString("localhost:2181");

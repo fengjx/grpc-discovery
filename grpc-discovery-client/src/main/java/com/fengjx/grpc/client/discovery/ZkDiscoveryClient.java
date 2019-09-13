@@ -1,7 +1,7 @@
 
-package com.fengjx.grpc.server.client.discovery;
+package com.fengjx.grpc.client.discovery;
 
-import com.fengjx.grpc.common.config.ZkProperties;
+import com.fengjx.grpc.common.config.ZkConfiguration;
 import com.fengjx.grpc.common.discovery.ServiceInstance;
 import com.fengjx.grpc.common.utils.ZkUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +19,8 @@ public class ZkDiscoveryClient implements DiscoveryClient {
 
     private CuratorFramework client;
 
-    public ZkDiscoveryClient(ZkProperties zkProperties) throws InterruptedException {
-        this(ZkUtils.createCuratorFramework(zkProperties));
+    public ZkDiscoveryClient(ZkConfiguration zkConfiguration) throws InterruptedException {
+        this(ZkUtils.createCuratorFramework(zkConfiguration));
     }
 
     public ZkDiscoveryClient(CuratorFramework client) {

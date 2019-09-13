@@ -1,4 +1,4 @@
-package com.fengjx.grpc.server.client.resolver;
+package com.fengjx.grpc.client.resolver;
 
 import org.apache.curator.framework.api.BackgroundCallback;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;

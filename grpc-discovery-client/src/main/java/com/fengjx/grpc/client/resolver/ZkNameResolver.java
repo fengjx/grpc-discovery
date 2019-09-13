@@ -1,5 +1,5 @@
 
-package com.fengjx.grpc.server.client.resolver;
+package com.fengjx.grpc.client.resolver;
 
 import com.fengjx.grpc.common.constant.DiscoveryConsts;
 import com.fengjx.grpc.common.utils.NetworkUtils;
@@ -74,9 +74,8 @@ public class ZkNameResolver extends NameResolver implements ZkEventCallback {
         }
     }
 
-    @GuardedBy("this")
     private void resolve() {
-        log.debug("resolve for {}", serviceId);
+        log.debug("resolve for gRPC servers {}", serviceId);
         if (this.shutdown) {
             return;
         }

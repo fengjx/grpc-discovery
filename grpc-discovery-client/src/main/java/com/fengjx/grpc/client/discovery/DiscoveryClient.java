@@ -1,5 +1,5 @@
 
-package com.fengjx.grpc.server.client.discovery;
+package com.fengjx.grpc.client.discovery;
 
 import com.fengjx.grpc.common.discovery.ServiceInstance;
 
