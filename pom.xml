@@ -22,6 +22,7 @@
         <encoding>UTF-8</encoding>
         <junit.version>4.12</junit.version>
         <grpc.version>1.23.0</grpc.version>
+        <netty-tcnative.version>2.0.25.Final</netty-tcnative.version>
         <zookeeper.version>3.5.5</zookeeper.version>
         <lombok.version>1.18.8</lombok.version>
         <curator.version>4.2.0</curator.version>
@@ -62,6 +63,16 @@
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-netty</artifactId>
                 <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-netty-shaded</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-tcnative</artifactId>
+                <version>${netty-tcnative.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
