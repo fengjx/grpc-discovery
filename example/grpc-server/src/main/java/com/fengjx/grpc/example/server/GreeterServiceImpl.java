@@ -1,8 +1,9 @@
-package com.fengjx.grpc.example;
+package com.fengjx.grpc.example.server;
 
-import com.fengjx.grpc.helloworld.GreeterServiceGrpc;
-import com.fengjx.grpc.helloworld.HelloReply;
-import com.fengjx.grpc.helloworld.HelloRequest;
+
+import com.fengjx.grpc.example.proto.helloworld.GreeterServiceGrpc;
+import com.fengjx.grpc.example.proto.helloworld.HelloReply;
+import com.fengjx.grpc.example.proto.helloworld.HelloRequest;
 import io.grpc.stub.StreamObserver;
 
 /**
