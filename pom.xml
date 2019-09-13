@@ -63,6 +63,7 @@
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-netty</artifactId>
                 <version>${grpc.version}</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
