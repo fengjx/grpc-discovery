@@ -1,3 +1,4 @@
+
 package com.fengjx.grpc.client;
 
 import io.grpc.ClientInterceptor;
@@ -20,5 +21,11 @@ public interface GrpcClient {
     }
 
     <T extends AbstractStub<T>> T newStub(String serviceId, Class<T> cls, List<ClientInterceptor> interceptors);
+
+    default <T> T newAnyTypeStub(String serviceId, Class<T> cls) {
+        return newAnyTypeStub(serviceId, cls, Collections.emptyList());
+    }
+
+    <T> T newAnyTypeStub(String serviceId, Class<T> cls, List<ClientInterceptor> interceptors);
 
 }

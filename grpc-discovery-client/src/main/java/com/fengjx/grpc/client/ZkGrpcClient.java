@@ -55,14 +55,23 @@ public class ZkGrpcClient implements GrpcClient {
 
     @Override
     public <T extends AbstractStub<T>> T newStub(String serviceId, Class<T> cls, List<ClientInterceptor> interceptors) {
+        return newAnyTypeStub(serviceId, cls, interceptors);
+    }
+
+    @Override
+    public <T> T newAnyTypeStub(String serviceId, Class<T> cls, List<ClientInterceptor> interceptors) {
+        if (!AbstractStub.class.isAssignableFrom(cls)) {
+            throw new IllegalArgumentException(
+                    "Unsupported type " + cls.getName() + ", 2nd parameter must isAssignableFrom AbstractStub");
+        }
         Channel channel = grpcChannelFactory.createChannel(serviceId, interceptors);
         return ReflectUtil.newInstance(cls, channel);
     }
 
 
     private synchronized void init() throws InterruptedException {
-        client = ZkUtils.createCuratorFramework(zkConfiguration);
         if (nameResolverProvider == null) {
+            client = ZkUtils.createCuratorFramework(zkConfiguration);
             nameResolverProvider = new ZkNameResolverProvider(client);
         }
         if (grpcChannelFactory == null) {
