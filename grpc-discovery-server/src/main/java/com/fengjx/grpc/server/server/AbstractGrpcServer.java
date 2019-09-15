@@ -1,76 +1,71 @@
-
-package com.fengjx.grpc.server;
+package com.fengjx.grpc.server.server;
 
 import com.fengjx.grpc.common.discovery.ServiceInstance;
-import com.fengjx.grpc.server.registry.ServerRegistration;
 import com.google.common.collect.Lists;
-import com.google.common.net.InetAddresses;
-import io.grpc.BindableService;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
-import io.grpc.ServerServiceDefinition;
+import io.grpc.*;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 
 /**
  * @author fengjianxin
  */
 @Slf4j
-public class GrpcServer {
+public abstract class AbstractGrpcServer implements GrpcServer {
 
-    private ServiceInstance serviceInstance;
-    private Server server;
-    private ServerRegistration registration;
-    private List<ServerServiceDefinition> services = Lists.newArrayList();
+    protected ServiceInstance serviceInstance;
+    protected Server server;
+    private List<ServerServiceDefinition> serviceDefinitions = Lists.newArrayList();
     private List<BindableService> bindableServices = Lists.newArrayList();
 
-    private GrpcServer() {
-    }
-
-    private GrpcServer(ServiceInstance serviceInstance) {
+    public AbstractGrpcServer(ServiceInstance serviceInstance){
         this.serviceInstance = serviceInstance;
     }
 
-    public static GrpcServer newInstance(ServiceInstance serviceInstance) {
-        return new GrpcServer(serviceInstance);
-    }
-
+    @Override
     public GrpcServer addService(ServerServiceDefinition service) {
-        services.add(service);
+        serviceDefinitions.add(service);
         return this;
     }
 
+    @Override
     public GrpcServer addService(BindableService bindableService) {
         bindableServices.add(bindableService);
         return this;
     }
 
-    public GrpcServer registration(ServerRegistration registration) {
-        this.registration = registration;
+    @Override
+    public GrpcServer addService(BindableService bindableService, List<ServerInterceptor> interceptors) {
+        serviceDefinitions.add(ServerInterceptors.intercept(bindableService, interceptors));
         return this;
     }
 
+    protected abstract NettyServerBuilder newServerBuilder();
+
+    protected abstract void registry(ServiceInstance serviceInstance) throws Exception;
+
+    @Override
     public void start() throws Exception {
         start(false);
     }
 
+    @Override
     public void start(boolean block) throws Exception {
         NettyServerBuilder serverBuilder = newServerBuilder();
-        configureServices(serverBuilder);
+        configureServiceDefinitions(serverBuilder);
         configureBindableServices(serverBuilder);
         server = serverBuilder.build();
         server.start();
         log.info("gRPC Server started, binding on host: {}, port: {}", serviceInstance.getHost(),
                 serviceInstance.getPort());
-        registration.registry(serviceInstance);
+        registry(serviceInstance);
         if (block) {
             blockUntilShutdown();
         }
     }
 
+    @Override
     public void destroy() {
         Server localServer = this.server;
         if (localServer != null) {
@@ -80,14 +75,8 @@ public class GrpcServer {
         }
     }
 
-    private NettyServerBuilder newServerBuilder() {
-        final String host = serviceInstance.getHost();
-        final int port = serviceInstance.getPort();
-        return NettyServerBuilder.forAddress(new InetSocketAddress(InetAddresses.forString(host), port));
-    }
-
-    private void configureServices(ServerBuilder serverBuilder) {
-        for (ServerServiceDefinition service : services) {
+    private void configureServiceDefinitions(ServerBuilder serverBuilder) {
+        for (ServerServiceDefinition service : serviceDefinitions) {
             serverBuilder.addService(service);
         }
     }
@@ -103,4 +92,5 @@ public class GrpcServer {
             server.awaitTermination();
         }
     }
+
 }
