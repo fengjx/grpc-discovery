@@ -1,2 +1,4 @@
 # AutoConfiguration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.fengjx.grpc.client.springboot.autoconfigure.GrpcClientAutoConfigure,\
+com.fengjx.grpc.client.springboot.autoconfigure.GrpcStubAutoConfiguration
