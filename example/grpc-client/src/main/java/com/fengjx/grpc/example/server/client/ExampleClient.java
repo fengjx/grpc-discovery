@@ -1,3 +1,4 @@
+
 package com.fengjx.grpc.example.server.client;
 
 import com.fengjx.grpc.client.GrpcClient;
@@ -20,7 +21,8 @@ public class ExampleClient {
         ZkConfiguration zkConfig = ZkConfig.EXAMPLE_CONFIG;
         GrpcClient grpcClient = new ZkGrpcClient(zkConfig);
         grpcClient.satrt();
-        GreeterServiceGrpc.GreeterServiceBlockingStub greeterService = grpcClient.newStub("hello-world", GreeterServiceGrpc.GreeterServiceBlockingStub.class);
+        GreeterServiceGrpc.GreeterServiceBlockingStub greeterService =
+                grpcClient.newStub("hello-world", GreeterServiceGrpc.GreeterServiceBlockingStub.class);
         HelloRequest request = HelloRequest.newBuilder().setName("fengjx").build();
         while (true) {
             try {
