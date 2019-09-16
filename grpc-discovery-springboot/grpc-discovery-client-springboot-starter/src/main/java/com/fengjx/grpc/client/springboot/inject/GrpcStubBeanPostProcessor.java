@@ -6,6 +6,7 @@ import com.fengjx.grpc.client.springboot.annotation.GrpcStub;
 import com.google.common.collect.Lists;
 import io.grpc.ClientInterceptor;
 import io.grpc.stub.AbstractStub;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.BeanCreationException;
@@ -25,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author fengjianxin
  */
+@Slf4j
 public class GrpcStubBeanPostProcessor implements BeanPostProcessor {
 
     private final ApplicationContext applicationContext;
@@ -73,6 +75,7 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor {
         }
         final List<ClientInterceptor> interceptors = interceptorsFromAnnotation(annotation);
         final String serviceId = annotation.value();
+        log.info("new grpc stub, serviceId: {}, type: {}", serviceId, injectionType);
         return grpcClient.newAnyTypeStub(serviceId, injectionType, interceptors);
     }
 

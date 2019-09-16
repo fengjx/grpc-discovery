@@ -1,5 +1,7 @@
+
 package com.fengjx.grpc.client.channel;
 
+import cn.hutool.core.collection.CollUtil;
 import io.grpc.*;
 
 import javax.annotation.concurrent.GuardedBy;
@@ -15,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractChannelFactory<T extends ManagedChannelBuilder<T>> implements GrpcChannelFactory {
 
-    protected static final String DEFAULT_LOAD_BALANCING_POLICY = "round_robin";
+    static final String DEFAULT_LOAD_BALANCING_POLICY = "round_robin";
     private static final Duration DEFAULT_KEEP_ALIVE_TIME = Duration.of(60, ChronoUnit.SECONDS);
     private static final Duration DEFAULT_KEEP_ALIVE_TIMEOUT = Duration.of(20, ChronoUnit.SECONDS);
     private static final boolean DEFAULT_KEEP_ALIVE_WITHOUT_CALLS = false;
@@ -31,7 +33,11 @@ public abstract class AbstractChannelFactory<T extends ManagedChannelBuilder<T>>
 
     @Override
     public Channel createChannel(String serviceId, List<ClientInterceptor> interceptors) {
-        return channels.computeIfAbsent(serviceId, this::newManagedChannel);
+        ManagedChannel managedChannel = channels.computeIfAbsent(serviceId, this::newManagedChannel);
+        if (CollUtil.isNotEmpty(interceptors)) {
+            return ClientInterceptors.interceptForward(managedChannel, interceptors);
+        }
+        return managedChannel;
     }
 
     private ManagedChannel newManagedChannel(final String serviceId) {
