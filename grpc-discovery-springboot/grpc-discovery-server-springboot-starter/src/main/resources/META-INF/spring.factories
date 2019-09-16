@@ -1,2 +1,3 @@
 # AutoConfiguration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.fengjx.grpc.server.springboot.autoconfigure.GrpcServerAutoConfigure

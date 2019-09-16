@@ -21,5 +21,6 @@ public class GrpcServerProperties {
     private String ip;
     private int port;
     private Map<String, Object> metadata = new HashMap<>();
+    private GrpcServerInterceptorProperties interceptor = new GrpcServerInterceptorProperties();
 
 }
