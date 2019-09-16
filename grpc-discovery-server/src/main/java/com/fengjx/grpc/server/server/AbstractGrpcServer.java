@@ -1,3 +1,4 @@
+
 package com.fengjx.grpc.server.server;
 
 import com.fengjx.grpc.common.discovery.ServiceInstance;
@@ -7,6 +8,7 @@ import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author fengjianxin
@@ -14,12 +16,14 @@ import java.util.List;
 @Slf4j
 public abstract class AbstractGrpcServer implements GrpcServer {
 
+    private static AtomicInteger serverCounter = new AtomicInteger(-1);
+
     protected ServiceInstance serviceInstance;
     protected Server server;
     private List<ServerServiceDefinition> serviceDefinitions = Lists.newArrayList();
     private List<BindableService> bindableServices = Lists.newArrayList();
 
-    public AbstractGrpcServer(ServiceInstance serviceInstance){
+    public AbstractGrpcServer(ServiceInstance serviceInstance) {
         this.serviceInstance = serviceInstance;
     }
 
@@ -61,7 +65,18 @@ public abstract class AbstractGrpcServer implements GrpcServer {
                 serviceInstance.getPort());
         registry(serviceInstance);
         if (block) {
-            blockUntilShutdown();
+            final Thread awaitThread = new Thread("grpc-server-container-" + (serverCounter.incrementAndGet())) {
+                @Override
+                public void run() {
+                    try {
+                        blockUntilShutdown();
+                    } catch (final InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            };
+            awaitThread.setDaemon(false);
+            awaitThread.start();
         }
     }
 
@@ -73,6 +88,11 @@ public abstract class AbstractGrpcServer implements GrpcServer {
             this.server = null;
             log.info("gRPC server shutdown");
         }
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.server != null && !this.server.isShutdown();
     }
 
     private void configureServiceDefinitions(ServerBuilder serverBuilder) {

@@ -1,6 +1,7 @@
 
 package com.fengjx.grpc.server.registry;
 
+import cn.hutool.core.util.StrUtil;
 import com.fengjx.grpc.common.config.ZkConfiguration;
 import com.fengjx.grpc.common.discovery.GsonInstanceSerializer;
 import com.fengjx.grpc.common.discovery.InstanceSerializer;
@@ -31,6 +32,9 @@ public class ZkServerRegistration implements ServerRegistration {
 
     @Override
     public void registry(ServiceInstance serviceInstance) throws Exception {
+        if (StrUtil.isBlank(serviceInstance.getServiceId())) {
+            throw new IllegalArgumentException("serviceId can not be null");
+        }
         serviceInstance.getMetadata().put(ServiceInstance.METADATA_KEY_START_TIME, System.currentTimeMillis());
         byte[] bytes = serializer.serialize(serviceInstance);
         String servicePath = "/" + serviceInstance.getServiceId();

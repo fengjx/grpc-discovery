@@ -16,7 +16,9 @@ public interface GrpcServer {
 
     void start(boolean block) throws Exception;
 
-    void destroy() throws Exception;
+    void destroy();
+
+    boolean isRunning();
 
     GrpcServer addService(ServerServiceDefinition service);
 
