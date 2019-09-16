@@ -18,6 +18,7 @@
         <module>grpc-proto</module>
         <module>grpc-client</module>
         <module>grpc-client-springboot</module>
+        <module>grpc-server-springboot</module>
     </modules>
 
     <properties>

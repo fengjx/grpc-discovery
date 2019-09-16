@@ -1,11 +1,12 @@
 
-package com.fengjx.grpc.example.client.springboot.service;
+package com.fengjx.grpc.example.client.springboot.grpc.service;
 
-import com.fengjx.grpc.example.proto.helloworld.HelloReply;
 import org.springframework.stereotype.Service;
 
 import com.fengjx.grpc.client.springboot.annotation.GrpcStub;
+import com.fengjx.grpc.example.client.springboot.grpc.interceptor.LogClientInterceptor;
 import com.fengjx.grpc.example.proto.helloworld.GreeterServiceGrpc;
+import com.fengjx.grpc.example.proto.helloworld.HelloReply;
 import com.fengjx.grpc.example.proto.helloworld.HelloRequest;
 
 /**
@@ -14,7 +15,7 @@ import com.fengjx.grpc.example.proto.helloworld.HelloRequest;
 @Service
 public class GreeterService {
 
-    @GrpcStub("hello-world")
+    @GrpcStub(value = "hello-world", interceptors = LogClientInterceptor.class)
     private GreeterServiceGrpc.GreeterServiceBlockingStub blockingStub;
 
     public String sayHello(String name) {
