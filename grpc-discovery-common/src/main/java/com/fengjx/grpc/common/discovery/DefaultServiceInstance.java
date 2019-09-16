@@ -1,5 +1,7 @@
+
 package com.fengjx.grpc.common.discovery;
 
+import cn.hutool.core.util.StrUtil;
 import com.fengjx.grpc.common.utils.NetworkUtils;
 import lombok.Setter;
 
@@ -16,7 +18,7 @@ public class DefaultServiceInstance implements ServiceInstance {
 
     private String serviceId;
     private String host = "0.0.0.0";
-    private String ip = NetworkUtils.getLocalInnerIp();
+    private String ip;
     private int port;
     private Map<String, Object> metadata = new HashMap<>();
 
@@ -33,12 +35,18 @@ public class DefaultServiceInstance implements ServiceInstance {
 
     @Override
     public String getIp() {
+        if (StrUtil.isBlank(this.ip)) {
+            this.ip = NetworkUtils.getLocalInnerIp();
+        }
         return ip;
     }
 
     @Override
     public int getPort() {
-        return port;
+        if (this.port == 0) {
+            this.port = NetworkUtils.getUsableLocalPort();
+        }
+        return this.port;
     }
 
 
@@ -49,6 +57,7 @@ public class DefaultServiceInstance implements ServiceInstance {
             this.port = port;
         }
     }
+
 
     @Override
     public URI getUri() {
