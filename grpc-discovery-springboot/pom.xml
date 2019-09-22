@@ -12,9 +12,9 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>grpc-discovery-common-springboot</module>
         <module>grpc-discovery-server-springboot-starter</module>
         <module>grpc-discovery-client-springboot-starter</module>
-        <module>grpc-discovery-common-springboot</module>
     </modules>
 
     <dependencies>
@@ -34,13 +34,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

@@ -8,7 +8,7 @@
     <artifactId>grpc-discovery</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>grpc-discovery</name>
-    <description>grpc client-side load balancing</description>
+    <description>grpc client-side load balancing base on zookeeper</description>
 
     <modules>
         <module>grpc-discovery-common</module>
@@ -125,6 +125,31 @@
     </dependencyManagement>
 
 
+    <profiles>
+        <profile>
+            <id>sonatype</id>
+            <properties>
+                <repo-id>sonatype</repo-id>
+                <repo-snapshot-id>sonatype</repo-snapshot-id>
+                <repository>https://oss.sonatype.org/service/local/staging/deploy/maven2/</repository>
+                <snapshotRepository>https://oss.sonatype.org/content/repositories/snapshots</snapshotRepository>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>aliyun</id>
+            <properties>
+                <!--阿里云私服-->
+                <repo-id>rdc-releases</repo-id>
+                <repo-snapshot-id>rdc-snapshots</repo-snapshot-id>
+                <repository>https://repo.rdc.aliyun.com/repository/19765-release-JzbxG3/</repository>
+                <snapshotRepository>https://repo.rdc.aliyun.com/repository/19765-snapshot-Vnqp1B/</snapshotRepository>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -140,8 +165,57 @@
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.1.0</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.3</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>fengjx</id>
+            <email>fengjianxin2012@gmail.com</email>
+            <name>Feng Jianxin</name>
+            <url>http://blog.fengjx.com</url>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <url>https://github.com/fengjx/grpc-discovery/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+    <scm>
+        <url>https://github.com/fengjx/grpc-discovery</url>
+        <connection>scm:git:https://github.com/fengjx/grpc-discovery.git</connection>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>${repo-id}</id>
+            <url>${snapshotRepository}</url>
+        </snapshotRepository>
+        <repository>
+            <id>${repo-snapshot-id}</id>
+            <url>${repository}</url>
+        </repository>
+    </distributionManagement>
 
 </project>
