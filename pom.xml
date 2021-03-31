@@ -26,7 +26,7 @@
         <zookeeper.version>3.5.5</zookeeper.version>
         <lombok.version>1.18.8</lombok.version>
         <curator.version>4.2.0</curator.version>
-        <guava.version>28.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <fastjson.version>1.2.60</fastjson.version>
         <hutool.version>4.6.4</hutool.version>
         <spring-boot.version>2.1.8.RELEASE</spring-boot.version>
