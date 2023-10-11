@@ -23,7 +23,7 @@
         <junit.version>4.12</junit.version>
         <grpc.version>1.53.0</grpc.version>
         <netty-tcnative.version>2.0.25.Final</netty-tcnative.version>
-        <zookeeper.version>3.5.5</zookeeper.version>
+        <zookeeper.version>3.7.2</zookeeper.version>
         <lombok.version>1.18.8</lombok.version>
         <curator.version>4.2.0</curator.version>
         <guava.version>32.0.0-jre</guava.version>
