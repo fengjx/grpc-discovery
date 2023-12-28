@@ -28,7 +28,7 @@
         <curator.version>4.2.0</curator.version>
         <guava.version>32.0.0-jre</guava.version>
         <fastjson.version>1.2.83</fastjson.version>
-        <hutool.version>5.8.20</hutool.version>
+        <hutool.version>5.8.24</hutool.version>
         <spring-boot.version>2.1.8.RELEASE</spring-boot.version>
     </properties>
 
